@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Snapshot from '../views/Snapshot.vue'
-import Zone from '../views/Zone.vue'
-import History from '../views/History.vue'
+import Home from '../views/HomePage.vue'
+import Snapshot from '../views/SnapshotPage.vue'
+import Zone from '../views/ZonePage.vue'
+import History from '../views/HistoryPage.vue'
 
 const routes = [
 	{ path: '/', component: Home },
