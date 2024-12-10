@@ -15,7 +15,7 @@
 					varient="text"
 					raised
 					rounded
-					@click="navigatoTo('/zone')"
+					@click="navigateTo('/zone')"
 				/>
 				<Button
 					label="history"
@@ -25,7 +25,7 @@
 					varient="text"
 					raised
 					rounded
-					@click="navigatoTo('/history')"
+					@click="navigateTo('/history')"
 				/>
 			</div>
 			<div class="alarm-popup" v-if="!isSafe">
@@ -43,7 +43,7 @@
 						severity="success"
 						variant="text"
 						raised
-						@click="navigatoTo('/snapshot')"
+						@click="navigateTo('/snapshot')"
 					/>
 					<Button
 						label="NO"
@@ -69,7 +69,7 @@ import { useRouter } from 'vue-router'
 const isSafe = ref(true)
 
 const router = useRouter()
-const navigatoTo = (path) => {
+const navigateTo = (path) => {
 	router.push(path)
 }
 
