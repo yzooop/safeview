@@ -7,4 +7,3 @@ export const formatDateRange = (dateRange) => {
 	const end = dateRange[1].toISOString().split('T')[0]
 
 	return { start, end }
-}

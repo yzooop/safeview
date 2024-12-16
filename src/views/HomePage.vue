@@ -1,7 +1,6 @@
 <template>
 	<div :class="{ safe: isSafe, alarm: !isSafe }">
 		<div class="container">
-			<button @click="toggle">클릭</button>
 			<div class="logo">
 				<img :src="isSafe ? safeImg : alarmImg" alt="Logo" />
 			</div>
@@ -59,22 +58,60 @@
 	</div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script>
 import safeImg from '../image/safe.png'
 import alarmImg from '../image/alarm.png'
-import { Button } from 'primevue'
-import { useRouter } from 'vue-router'
+import Button from 'primevue/button'
 
-const isSafe = ref(true)
+export default {
+	components: {
+		Button,
+	},
+	data() {
+		return {
+			isSafe: true,
+			safeImg,
+			alarmImg,
+			id: null,
+			snapshot: null,
+		}
+	},
+	methods: {
+		navigateTo(path) {
+			this.$router.push({ path, query: { id: this.id } })
+		},
+		toggle() {
+			this.isSafe = !this.isSafe
+		},
 
-const router = useRouter()
-const navigateTo = (path) => {
-	router.push(path)
-}
+		// sse 연결
+		connectSSE() {
+			this.eventSource = new EventSource('http://localhost:8000/api/sse')
 
-const toggle = () => {
-	isSafe.value = !isSafe.value
+			this.eventSource.onmessage = (event) => {
+				const data = event.data.split('data: ')[1]
+				const objData = JSON.parse(data)
+
+				this.isSafe = false
+				this.id = objData.id
+
+				console.log('alarm id : ', this.id)
+			}
+
+			this.eventSource.onerror = () => {
+				console.error('SSE 연결 오류 발생')
+				this.eventSource.close()
+			}
+		},
+	},
+	mounted() {
+		this.connectSSE()
+	},
+	beforeUnmount() {
+		if (this.eventSource) {
+			this.eventSource.close() // 컴포넌트가 언마운트될 때 SSE 연결 종료
+		}
+	},
 }
 </script>
 

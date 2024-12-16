@@ -1,9 +1,9 @@
 <template>
 	<div class="snapshot">
 		<div class="snapshot-wrapper">
-			<div>2024-12-09 11:14:23</div>
+			<div>{{ snapshotTime }}</div>
 			<div class="image">
-				<img :src="image" alt="Snapshot Image" />
+				<img :src="imageURL" alt="Snapshot Image" />
 			</div>
 			<div class="snapshot-button">
 				<Button label="REPORT" severity="secondary" size="small" variant="outlined" />
@@ -20,39 +20,38 @@
 </template>
 
 <script>
-import image from '../image/3.jpg'
 import Button from 'primevue/button'
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 export default {
 	data() {
 		return {
-			image,
+			imageURL: null,
+			snapshotTime: null,
 		}
 	},
 	components: {
 		Button,
 	},
-	setup() {
-		const router = useRouter()
+	methods: {
+		navigateTo(path) {
+			this.$router.push(path)
+		},
 
-		const navigateTo = (path) => {
-			if (router) {
-				router.push(path)
+		// 사진을 가져오는 메서드
+		async fetchSnapshot() {
+			try {
+				const id = new URLSearchParams(window.location.search).get('id')
+				const res = await axios.get(`http://localhost:8000/api/alarm/snapshot/${id}`)
+				this.imageURL = `http://localhost:8000/attachments/${res.data.time}.jpg`
+				this.snapshotTime = res.data.time
+			} catch (error) {
+				console.error('Error fetching snapshot:', error)
 			}
-		}
-
-		onMounted(() => {
-			// router는 비동기로 로드될 수 있으므로, useRouter가 존재할 때까지 대기
-			if (!router) {
-				console.error('Router is not yet initialized.')
-			}
-		})
-
-		return {
-			navigateTo,
-		}
+		},
+	},
+	mounted() {
+		this.fetchSnapshot()
 	},
 }
 </script>

@@ -24,11 +24,9 @@
 </template>
 
 <script>
-import { formatDateRange } from '@/util/dateUtil'
 import DatePicker from 'primevue/datepicker'
 import Button from 'primevue/button'
 import DataTable from '../components/DataTable.vue'
-import { ref } from 'vue'
 
 export default {
 	components: {
@@ -36,35 +34,49 @@ export default {
 		Button,
 		DataTable,
 	},
-	setup() {
-		const dates = ref(null)
-
-		const products = ref([
-			{ date: '2024-12-09 MON', snapshot: '사진보기', status: 'DISMISS', station: '' },
-			{
-				date: '2024-12-09 MON',
-				snapshot: '사진보기',
-				status: 'REPORT',
-				station: '강남경찰서',
-			},
-			{ date: '2024-12-09 MON', snapshot: '사진보기', status: 'REPORT', station: '' },
-			{
-				date: '2024-12-09 MON',
-				snapshot: '사진보기',
-				status: 'DISMISS',
-				station: '강서경찰서',
-			},
-			{ date: '2024-12-09 MON', snapshot: '사진보기', status: 'REPORT', station: '' },
-		])
-
-		const handleClick = () => {
-			const formattedDate = formatDateRange(dates.value)
-			console.log('Selected Dates:', formattedDate)
-
-			// TODO : 백엔드로 보낼 로직 짜기
+	data() {
+		return {
+			dates: null,
+			products: [
+				{ date: '2024-12-09 MON', snapshot: '사진보기', status: 'DISMISS', station: '' },
+				{
+					date: '2024-12-09 MON',
+					snapshot: '사진보기',
+					status: 'REPORT',
+					station: '강남경찰서',
+				},
+				{ date: '2024-12-09 MON', snapshot: '사진보기', status: 'REPORT', station: '' },
+				{
+					date: '2024-12-09 MON',
+					snapshot: '사진보기',
+					status: 'DISMISS',
+					station: '강서경찰서',
+				},
+				{ date: '2024-12-09 MON', snapshot: '사진보기', status: 'REPORT', station: '' },
+			],
 		}
+	},
+	methods: {
+		handleClick() {
+			const startOffset = new Date(
+				this.dates[0].getTime() - new Date().getTimezoneOffset() * 60000,
+			)
+				.toISOString()
+				.split('T')[0]
+			const endOffset = new Date(
+				this.dates[1].getTime() - new Date().getTimezoneOffset() * 60000,
+			)
+				.toISOString()
+				.split('T')[0]
 
-		return { dates, handleClick, products }
+			const formattedDates = {
+				start: startOffset,
+				end: endOffset,
+			}
+
+			console.log(formattedDates)
+			// TODO: 백엔드로 보낼 로직 추가
+		},
 	},
 }
 </script>
